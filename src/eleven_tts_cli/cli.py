@@ -5,7 +5,6 @@ Regola: Nessuna logica business significativa qui - solo interazione utente.
 """
 
 import logging
-import sys
 from pathlib import Path
 
 import typer
@@ -210,8 +209,9 @@ def _ask_retry() -> bool:
         return False
 
 
-@app.command()
+@app.callback(invoke_without_command=True)
 def main(
+    ctx: typer.Context,
     text: str | None = typer.Option(
         None,
         "--text",
@@ -245,6 +245,9 @@ def main(
         # Hybrid mode
         $ python -m eleven_tts_cli --text "Hello"  # will ask for voice and output
     """
+    if ctx.invoked_subcommand is not None:
+        return
+
     console.print("[bold blue]ElevenLabs TTS CLI[/bold blue]\n")
 
     # Inizializza client e service
@@ -255,43 +258,43 @@ def main(
         console.print(f"[bold red]Error:[/bold red] {e}")
         console.print("\n[yellow]Please set ELEVENLABS_API_KEY environment variable:[/yellow]")
         console.print("  export ELEVENLABS_API_KEY='your-api-key-here'")
-        sys.exit(1)
+        raise typer.Exit(code=1)
 
     # Modalità ibrida: chiedi interattivamente i parametri mancanti
     if not voice_id:
         voice_id = select_voice_interactive(service)
         if not voice_id:
             console.print("[yellow]Voice selection cancelled.[/yellow]")
-            sys.exit(0)
+            raise typer.Exit(code=0)
 
     if not text:
         text = get_text_input()
         if not text:
             console.print("[yellow]Text input cancelled.[/yellow]")
-            sys.exit(0)
+            raise typer.Exit(code=0)
 
     if not output:
         output = get_output_filename()
         if not output:
             console.print("[yellow]Output filename cancelled.[/yellow]")
-            sys.exit(0)
+            raise typer.Exit(code=0)
 
     # Crea richiesta TTS
     try:
         request = TTSRequest(text=text, voice_id=voice_id, output_path=output)
     except ValueError as e:
         console.print(f"[bold red]Validation Error:[/bold red] {e}")
-        sys.exit(1)
+        raise typer.Exit(code=1)
 
     # Esegui TTS con retry
     success = execute_tts_with_retry(service, request)
 
     if success:
         console.print("\n[bold green]✓ Done![/bold green]")
-        sys.exit(0)
-    else:
-        console.print("\n[bold red]✗ Failed.[/bold red]")
-        sys.exit(1)
+        raise typer.Exit(code=0)
+
+    console.print("\n[bold red]✗ Failed.[/bold red]")
+    raise typer.Exit(code=1)
 
 
 if __name__ == "__main__":
