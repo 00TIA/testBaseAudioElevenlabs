@@ -16,6 +16,7 @@ class Voice:
         category: Categoria della voce (es. "premade", "cloned")
         labels: Dizionario di metadati aggiuntivi (es. {"accent": "american"})
     """
+
     voice_id: str
     name: str
     category: str | None = None
@@ -38,6 +39,7 @@ class TTSRequest:
         voice_id: ID della voce da utilizzare
         output_path: Percorso dove salvare l'audio generato
     """
+
     text: str
     voice_id: str
     output_path: str

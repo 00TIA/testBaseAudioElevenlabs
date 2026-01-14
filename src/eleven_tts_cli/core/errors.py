@@ -7,16 +7,19 @@ Platone: Robustezza attraverso gestione errori esplicita.
 
 class ElevenLabsCLIError(Exception):
     """Base exception per tutti gli errori dell'applicazione."""
+
     pass
 
 
 class APIError(ElevenLabsCLIError):
     """Errore generico durante chiamata API ElevenLabs."""
+
     pass
 
 
 class AuthenticationError(APIError):
     """API key mancante o non valida."""
+
     pass
 
 
@@ -29,6 +32,7 @@ class RateLimitError(APIError):
 
 class NetworkError(APIError):
     """Errore di rete durante chiamata API."""
+
     pass
 
 
@@ -42,9 +46,11 @@ class VoiceNotFoundError(APIError):
 
 class ValidationError(ElevenLabsCLIError):
     """Errore validazione input utente."""
+
     pass
 
 
 class FileSystemError(ElevenLabsCLIError):
     """Errore durante operazioni su file system."""
+
     pass

@@ -6,7 +6,9 @@ Separazione netta: questo modulo si occupa SOLO di HTTP/IO.
 
 import logging
 import os
+import types
 from collections.abc import Iterator
+from typing import NoReturn, Self
 
 import httpx
 
@@ -124,7 +126,7 @@ class ElevenLabsClient:
             "voice_settings": {
                 "stability": 0.5,
                 "similarity_boost": 0.75,
-            }
+            },
         }
 
         try:
@@ -147,7 +149,7 @@ class ElevenLabsClient:
             logger.error(f"Network error during TTS: {e}")
             raise NetworkError(f"Network error during text-to-speech: {e}") from e
 
-    def _handle_http_error(self, error: httpx.HTTPStatusError) -> None:
+    def _handle_http_error(self, error: httpx.HTTPStatusError) -> NoReturn:
         """Gestisce errori HTTP mappandoli a custom exceptions.
 
         Args:
@@ -172,10 +174,15 @@ class ElevenLabsClient:
         """Chiude connessione HTTP client."""
         self.client.close()
 
-    def __enter__(self):
+    def __enter__(self) -> Self:
         """Context manager support."""
         return self
 
-    def __exit__(self, exc_type, exc_val, exc_tb):
+    def __exit__(
+        self,
+        exc_type: type[BaseException] | None,
+        exc_val: BaseException | None,
+        exc_tb: types.TracebackType | None,
+    ) -> None:
         """Context manager cleanup."""
         self.close()

@@ -29,9 +29,7 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-app = typer.Typer(
-    help="ElevenLabs Text-to-Speech CLI - Convert text to audio using ElevenLabs API"
-)
+app = typer.Typer(help="ElevenLabs Text-to-Speech CLI - Convert text to audio using ElevenLabs API")
 console = Console()
 
 
@@ -80,9 +78,7 @@ def select_voice_interactive(service: TTSService) -> str | None:
         console.print(table)
 
         # Input utente
-        console.print(
-            "\n[dim]Enter number to select, text to search, or 'q' to quit[/dim]"
-        )
+        console.print("\n[dim]Enter number to select, text to search, or 'q' to quit[/dim]")
         user_input = input("Your choice: ").strip()
 
         if user_input.lower() == "q":
@@ -93,14 +89,10 @@ def select_voice_interactive(service: TTSService) -> str | None:
             idx = int(user_input)
             if 1 <= idx <= len(current_voices):
                 selected = current_voices[idx - 1]
-                console.print(
-                    f"[green]✓[/green] Selected: {selected.name} ({selected.voice_id})"
-                )
+                console.print(f"[green]✓[/green] Selected: {selected.name} ({selected.voice_id})")
                 return selected.voice_id
             else:
-                console.print(
-                    f"[red]Invalid number. Please enter 1-{len(current_voices)}[/red]"
-                )
+                console.print(f"[red]Invalid number. Please enter 1-{len(current_voices)}[/red]")
                 continue
 
         # Altrimenti interpreta come query testuale
