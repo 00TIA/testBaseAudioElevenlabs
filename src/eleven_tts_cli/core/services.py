@@ -69,15 +69,11 @@ class TTSService:
 
         # Verifica directory esistente
         if not output_path.parent.exists():
-            raise FileSystemError(
-                f"Output directory does not exist: {output_path.parent}"
-            )
+            raise FileSystemError(f"Output directory does not exist: {output_path.parent}")
 
         # Verifica permessi scrittura (approssimativo)
         if output_path.exists() and not output_path.is_file():
-            raise FileSystemError(
-                f"Output path exists but is not a file: {output_path}"
-            )
+            raise FileSystemError(f"Output path exists but is not a file: {output_path}")
 
         try:
             # Streaming audio da API e scrittura incrementale
@@ -115,6 +111,5 @@ class TTSService:
             return voices
 
         return [
-            v for v in voices
-            if query_lower in v.name.lower() or query_lower in v.voice_id.lower()
+            v for v in voices if query_lower in v.name.lower() or query_lower in v.voice_id.lower()
         ]

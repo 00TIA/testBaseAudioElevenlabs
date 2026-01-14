@@ -4,14 +4,13 @@ These tests verify basic CLI functionality without making real API calls.
 """
 
 import os
-from unittest.mock import patch, Mock
+from unittest.mock import Mock, patch
 
 import pytest
 from typer.testing import CliRunner
 
 from eleven_tts_cli.cli import app
 from eleven_tts_cli.core.models import Voice
-
 
 runner = CliRunner()
 
@@ -63,9 +62,12 @@ def test_cli_direct_mode_success(
     result = runner.invoke(
         app,
         [
-            "--text", "Hello world",
-            "--voice-id", "voice-1",
-            "--output", str(output_file),
+            "--text",
+            "Hello world",
+            "--voice-id",
+            "voice-1",
+            "--output",
+            str(output_file),
         ],
     )
 

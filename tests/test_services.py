@@ -2,12 +2,12 @@
 
 import tempfile
 from pathlib import Path
-from unittest.mock import Mock, patch, mock_open
+from unittest.mock import Mock
 
 import pytest
 
 from eleven_tts_cli.core.errors import FileSystemError
-from eleven_tts_cli.core.models import Voice, TTSRequest
+from eleven_tts_cli.core.models import TTSRequest, Voice
 from eleven_tts_cli.core.services import TTSService
 
 
@@ -112,11 +112,13 @@ def test_generate_audio_success(service, mock_api_client):
         )
 
         # Mock streaming response
-        mock_api_client.text_to_speech_stream.return_value = iter([
-            b"chunk1",
-            b"chunk2",
-            b"chunk3",
-        ])
+        mock_api_client.text_to_speech_stream.return_value = iter(
+            [
+                b"chunk1",
+                b"chunk2",
+                b"chunk3",
+            ]
+        )
 
         service.generate_audio(request)
 
