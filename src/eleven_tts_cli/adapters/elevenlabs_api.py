@@ -52,9 +52,8 @@ class ElevenLabsClient:
             base_url=self.BASE_URL,
             headers={
                 "xi-api-key": self.api_key,
-                "Content-Type": "application/json",
             },
-            timeout=30.0,
+            timeout=httpx.Timeout(30.0, connect=10.0, read=120.0),
         )
 
     def get_voices(self) -> list[Voice]:
@@ -71,7 +70,7 @@ class ElevenLabsClient:
         logger.info("Fetching voices from ElevenLabs API")
 
         try:
-            response = self.client.get("/voices")
+            response = self.client.get("/voices", headers={"Accept": "application/json"})
             response.raise_for_status()
 
             data = response.json()
@@ -130,7 +129,12 @@ class ElevenLabsClient:
         }
 
         try:
-            with self.client.stream("POST", endpoint, json=payload) as response:
+            with self.client.stream(
+                "POST",
+                endpoint,
+                json=payload,
+                headers={"Accept": "audio/mpeg"},
+            ) as response:
                 response.raise_for_status()
 
                 total_bytes = 0
